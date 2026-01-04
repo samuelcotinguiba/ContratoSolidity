@@ -322,45 +322,7 @@ contract.methods.setHello('Olá Mundo!').send({ from: account })
     .then(receipt => console.log('Transação confirmada:', receipt));
 ```
 
-#### Exemplo Completo
-
-```javascript
-const Web3 = require('web3');
-const contractABI = require('./ABI.json');
-
-// Conectar ao Ganache
-const web3 = new Web3('http://localhost:7545');
-
-// Configuração do contrato
-const contractAddress = '0xYourContractAddress';
-let contract = new web3.eth.Contract(contractABI, contractAddress);
-
-// Função async para interagir
-async function interagir() {
-    // Obter contas do Ganache
-    const accounts = await web3.eth.getAccounts();
-    const account = accounts[0];
-    
-    // Ler valores iniciais
-    const helloInicial = await contract.methods.hello().call();
-    const nameInicial = await contract.methods.name().call();
-    console.log('Hello inicial:', helloInicial);
-    console.log('Name inicial:', nameInicial);
-    
-    // Modificar valores
-    await contract.methods.setName('Binance').send({ from: account });
-    await contract.methods.setHello('Blockchain!').send({ from: account });
-    
-    // Ler valores atualizados
-    const helloFinal = await contract.methods.hello().call();
-    const nameFinal = await contract.methods.name().call();
-    console.log('Hello final:', helloFinal);
-    console.log('Name final:', nameFinal);
-}
-
-interagir();
 ```
-
 #### Operações Disponíveis no Contrato
 
 | Método | Tipo | Descrição |
