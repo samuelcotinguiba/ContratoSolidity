@@ -1,4 +1,18 @@
-# Contrato de Votação em Solidity
+# Smart Contracts em Solidity
+
+Repositório contendo contratos inteligentes desenvolvidos em Solidity com exemplos de interação via Web3.js
+
+---
+
+## 📚 Índice
+
+1. [O que é Solidity?](#o-que-é-solidity)
+2. [O que é Web3?](#o-que-é-web3)
+3. [Conceitos de Solidity](#-conceitos-de-solidity)
+4. [Contrato de Votação](#contrato-de-votação)
+5. [Contrato Hello World](#contrato-hello-world)
+
+---
 
 ## O que é Solidity?
 
@@ -10,6 +24,41 @@ Solidity é uma linguagem de programação orientada a objetos, de alto nível, 
 - **Baseada em Contratos**: O código é organizado em contratos, similares a classes em outras linguagens
 - **Execução Descentralizada**: O código roda em blockchain, sendo imutável e transparente
 - **Sintaxe Similar ao JavaScript/C++**: Facilita o aprendizado para desenvolvedores com experiência nessas linguagens
+
+---
+
+## O que é Web3?
+
+**Web3.js** é uma biblioteca JavaScript que permite interagir com a blockchain Ethereum através de aplicações web. Ela funciona como uma ponte entre seu código JavaScript e os smart contracts na blockchain.
+
+### Principais Funcionalidades:
+
+- **Conexão com Provedores**: Conecta com nós Ethereum (Ganache, Infura, MetaMask)
+- **Interação com Contratos**: Chama funções de smart contracts e recebe dados
+- **Gerenciamento de Contas**: Acessa carteiras e envia transações
+- **Eventos e Logs**: Escuta eventos emitidos pelos contratos
+
+### Como Funciona:
+
+```javascript
+// 1. Conectar ao provedor (nó Ethereum)
+const web3 = new Web3('http://localhost:7545');
+
+// 2. Criar instância do contrato
+const contract = new web3.eth.Contract(ABI, endereço);
+
+// 3. Interagir com o contrato
+await contract.methods.minhaFuncao().call(); // Leitura
+await contract.methods.minhaFuncao().send({ from: conta }); // Escrita
+```
+
+**Casos de Uso:**
+- Desenvolvimento de DApps (Aplicações Descentralizadas)
+- Integração de carteiras (MetaMask, WalletConnect)
+- Automação de transações blockchain
+- Leitura de dados em tempo real da blockchain
+
+---
 
 ## 📖 Conceitos de Solidity
 
@@ -96,7 +145,20 @@ contract Token is ERC20 {
 }
 ```
 
-## Como Funciona o Contrato de Votação
+---
+
+## Contrato de Votação
+
+Sistema de votação descentralizado implementado em Solidity.
+
+### Tecnologias Utilizadas
+
+- **Solidity**: ^0.4.22 até <0.9.0
+- **Licença**: Fins Educacionais
+- **EVM**: Ethereum Virtual Machine
+- **IDE**: Remix IDE / Truffle / Hardhat
+
+### Como Funciona
 
 Este contrato implementa um sistema de votação simples e descentralizado na blockchain.
 
@@ -157,15 +219,213 @@ constructor (string[] memory candidateNames)
 - ✅ Transparência total - qualquer um pode verificar os resultados
 - ⚠️ **Nota**: Este contrato não impede que um mesmo endereço vote múltiplas vezes
 
-### Tecnologias Utilizadas
-
-- **Solidity**: ^0.4.22 até <0.9.0
-- **Licença**: MIT
-- **EVM**: Ethereum Virtual Machine
-
-## Como Testar
+### Como Testar
 
 1. Deploy do contrato em uma rede de teste (Remix IDE, Hardhat, Truffle)
 2. Forneça uma lista de candidatos no constructor
 3. Use `voteForCandidate()` para votar
 4. Use `totalVotesfor()` para verificar resultados
+
+---
+
+## Contrato Hello World
+
+Contrato simples para aprendizado e interação com MetaMask e Ganache via Web3.js
+
+### Tecnologias Utilizadas
+
+- **Solidity**: ^0.8.0
+- **Web3.js**: ^4.x
+- **Node.js**: Para execução dos scripts
+- **Ganache**: Blockchain local para testes
+- **MetaMask**: Carteira Ethereum
+- **Remix IDE**: Compilação e deploy do contrato
+- **Licença**: Fins Educacionais
+
+### Código do Contrato
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract HelloWorld {
+    string public hello = "Hello World!";
+    string public name = "";
+    
+    function setName(string memory _name) public {
+        name = _name;
+    }
+    
+    function setHello(string memory _hello) public {
+        hello = _hello;
+    }
+}
+```
+
+### Interação com Web3 via NPM
+
+#### Pré-requisitos
+```bash
+npm install web3
+```
+
+#### Configuração e Conexão
+
+1. **Inicializar Web3 com provedor local (Ganache)**
+```javascript
+const Web3 = require('web3');
+const web3 = new Web3('http://localhost:7545'); // Porta padrão do Ganache
+```
+
+2. **Importar ABI do Contrato**
+
+Após compilar o contrato no Remix IDE, copie o ABI gerado e salve em um arquivo `ABI.json`:
+
+```javascript
+const contractABI = require('./ABI.json');
+```
+
+3. **Criar Instância do Contrato**
+
+```javascript
+// Endereço do contrato após deploy
+const contractAddress = '0x...'; // Copie do Remix ou Ganache
+
+// Criar nova instância do contrato
+let contract = new web3.eth.Contract(contractABI, contractAddress);
+```
+
+#### Interagindo com o Contrato
+
+**Leitura de Dados (métodos `view`):**
+```javascript
+// Ler valor de 'hello'
+contract.methods.hello().call()
+    .then(result => console.log('Hello:', result));
+
+// Ler valor de 'name'
+contract.methods.name().call()
+    .then(result => console.log('Name:', result));
+```
+
+**Escrita de Dados (transações):**
+```javascript
+// Obter conta da MetaMask/Ganache
+const account = '0x...'; // Seu endereço de carteira
+
+// Modificar o valor de 'name'
+contract.methods.setName('Samuel').send({ from: account })
+    .then(receipt => console.log('Transação confirmada:', receipt));
+
+// Modificar o valor de 'hello'
+contract.methods.setHello('Olá Mundo!').send({ from: account })
+    .then(receipt => console.log('Transação confirmada:', receipt));
+```
+
+#### Exemplo Completo
+
+```javascript
+const Web3 = require('web3');
+const contractABI = require('./ABI.json');
+
+// Conectar ao Ganache
+const web3 = new Web3('http://localhost:7545');
+
+// Configuração do contrato
+const contractAddress = '0xYourContractAddress';
+let contract = new web3.eth.Contract(contractABI, contractAddress);
+
+// Função async para interagir
+async function interagir() {
+    // Obter contas do Ganache
+    const accounts = await web3.eth.getAccounts();
+    const account = accounts[0];
+    
+    // Ler valores iniciais
+    const helloInicial = await contract.methods.hello().call();
+    const nameInicial = await contract.methods.name().call();
+    console.log('Hello inicial:', helloInicial);
+    console.log('Name inicial:', nameInicial);
+    
+    // Modificar valores
+    await contract.methods.setName('Binance').send({ from: account });
+    await contract.methods.setHello('Blockchain!').send({ from: account });
+    
+    // Ler valores atualizados
+    const helloFinal = await contract.methods.hello().call();
+    const nameFinal = await contract.methods.name().call();
+    console.log('Hello final:', helloFinal);
+    console.log('Name final:', nameFinal);
+}
+
+interagir();
+```
+
+#### Operações Disponíveis no Contrato
+
+| Método | Tipo | Descrição |
+|--------|------|-----------|
+| `hello()` | view | Retorna o valor da variável `hello` |
+| `name()` | view | Retorna o valor da variável `name` |
+| `setHello(string)` | transaction | Modifica o valor de `hello` |
+| `setName(string)` | transaction | Modifica o valor de `name` |
+
+**Observações:**
+- Métodos `view` não gastam gas (leitura)
+- Métodos de transação requerem gas e confirmação da carteira
+- Todas as modificações são registradas na blockchain
+
+---
+
+## 🚀 Como Começar
+
+### Pré-requisitos
+
+```bash
+# Instalar Node.js e npm
+# Baixar e instalar Ganache
+# Instalar extensão MetaMask no navegador
+```
+
+### Instalação
+
+```bash
+# Instalar Web3.js
+npm install web3
+
+# Ou globalmente
+npm install -g web3
+```
+
+### Deploy dos Contratos
+
+1. Abra o [Remix IDE](https://remix.ethereum.org)
+2. Importe os arquivos `.sol` do repositório
+3. Compile os contratos
+4. Conecte ao Ganache ou MetaMask
+5. Faça o deploy
+6. Copie o endereço do contrato e o ABI
+
+---
+
+## 📖 Recursos Adicionais
+
+- [Documentação Solidity](https://docs.soliditylang.org/)
+- [Web3.js Docs](https://web3js.readthedocs.io/)
+- [Remix IDE](https://remix.ethereum.org/)
+- [Ganache](https://trufflesuite.com/ganache/)
+- [MetaMask](https://metamask.io/)
+
+---
+
+## 📄 Licença
+
+Este repositório é destinado para **fins educacionais e de estudo**. 
+
+Os contratos aqui contidos foram desenvolvidos como parte do **Binance Bootcamp - DIO** para aprendizado de:
+- Desenvolvimento de Smart Contracts em Solidity
+- Interação com blockchain via Web3.js
+- Deploy e testes em ambiente local (Ganache)
+- Integração com carteiras (MetaMask)
+
+⚠️ **Aviso**: Estes contratos são exemplos didáticos e não devem ser utilizados em produção sem auditoria adequada.
