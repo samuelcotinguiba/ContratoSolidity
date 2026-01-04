@@ -322,7 +322,7 @@ contract.methods.setHello('Olá Mundo!').send({ from: account })
     .then(receipt => console.log('Transação confirmada:', receipt));
 ```
 
-```
+``
 #### Operações Disponíveis no Contrato
 
 | Método | Tipo | Descrição |
