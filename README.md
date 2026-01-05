@@ -9,8 +9,7 @@ Repositório contendo contratos inteligentes desenvolvidos em Solidity com exemp
 1. [O que é Solidity?](#o-que-é-solidity)
 2. [O que é Web3?](#o-que-é-web3)
 3. [Conceitos de Solidity](#-conceitos-de-solidity)
-4. [Contrato de Votação](#contrato-de-votação)
-5. [Contrato Hello World](#contrato-hello-world)
+4. [Projetos](#-projetos)
 
 ---
 
@@ -147,195 +146,44 @@ contract Token is ERC20 {
 
 ---
 
-## Contrato de Votação
+## 📁 Projetos
 
-Sistema de votação descentralizado implementado em Solidity.
+Este repositório contém três contratos inteligentes organizados em pastas separadas:
 
-### Tecnologias Utilizadas
+### 1. [Votacao/](Votacao/) - Sistema de Votação Descentralizado
+Implementa um sistema de votação simples onde candidatos são definidos no deploy e usuários podem votar de forma transparente na blockchain.
 
-- **Solidity**: ^0.4.22 até <0.9.0
-- **Licença**: Fins Educacionais
-- **EVM**: Ethereum Virtual Machine
-- **IDE**: Remix IDE / Truffle / Hardhat
+**Principais Funcionalidades:**
+- Registro de votos para candidatos pré-definidos
+- Validação de candidatos
+- Consulta de total de votos por candidato
 
-### Como Funciona
-
-Este contrato implementa um sistema de votação simples e descentralizado na blockchain.
-
-### Estrutura do Contrato
-
-#### 1. **Variáveis de Estado**
-
-```solidity
-mapping (string => uint256) public votesReceived;
-string[] public candidateList;
-```
-
-- `votesReceived`: Mapeia o nome de cada candidato para o número de votos recebidos
-- `candidateList`: Array que armazena a lista de candidatos válidos
-
-#### 2. **Constructor**
-
-```solidity
-constructor (string[] memory candidateNames)
-```
-
-- É executado apenas uma vez no momento do deploy do contrato
-- Inicializa a lista de candidatos que poderão receber votos
-- Os candidatos são definidos no momento da criação e não podem ser alterados
-
-#### 3. **Funções Principais**
-
-##### `voteForCandidate(string memory candidate)`
-- Permite que qualquer endereço vote em um candidato
-- Valida se o candidato existe antes de registrar o voto
-- Incrementa o contador de votos do candidato
-
-##### `totalVotesfor(string memory candidate)`
-- Função de leitura (`view`) que não modifica o estado
-- Retorna o número total de votos de um candidato específico
-- Valida se o candidato existe antes de retornar
-
-##### `validCandidate(string memory candidate)`
-- Verifica se um candidato está na lista de candidatos válidos
-- Usa `keccak256` para comparar strings de forma segura
-- Retorna `true` se o candidato for válido, `false` caso contrário
-
-### Fluxo de Uso
-
-1. **Deploy**: O contrato é implantado com uma lista inicial de candidatos
-   ```javascript
-   // Exemplo: ["Alice", "Bob", "Carlos"]
-   ```
-
-2. **Votação**: Usuários chamam `voteForCandidate("Alice")` para registrar votos
-
-3. **Consulta**: Qualquer pessoa pode verificar votos com `totalVotesfor("Alice")`
-
-### Características de Segurança
-
-- ✅ Valida candidatos antes de aceitar votos
-- ✅ Todos os votos são registrados permanentemente na blockchain
-- ✅ Transparência total - qualquer um pode verificar os resultados
-- ⚠️ **Nota**: Este contrato não impede que um mesmo endereço vote múltiplas vezes
-
-### Como Testar
-
-1. Deploy do contrato em uma rede de teste (Remix IDE, Hardhat, Truffle)
-2. Forneça uma lista de candidatos no constructor
-3. Use `voteForCandidate()` para votar
-4. Use `totalVotesfor()` para verificar resultados
+**Tecnologias:** Solidity ^0.4.22, Remix IDE
 
 ---
 
-## Contrato Hello World
+### 2. [hello/](hello/) - Hello World com Web3.js
+Contrato básico para aprendizado de Solidity e interação com blockchain via Web3.js, conectando MetaMask e Ganache.
 
-Contrato simples para aprendizado e interação com MetaMask e Ganache via Web3.js
+**Principais Funcionalidades:**
+- Armazenamento de strings na blockchain
+- Modificação de variáveis de estado
+- Exemplos completos de integração Web3
 
-### Tecnologias Utilizadas
+**Tecnologias:** Solidity ^0.8.0, Web3.js, Node.js, Ganache, MetaMask
 
-- **Solidity**: ^0.8.0
-- **Web3.js**: ^4.x
-- **Node.js**: Para execução dos scripts
-- **Ganache**: Blockchain local para testes
-- **MetaMask**: Carteira Ethereum
-- **Remix IDE**: Compilação e deploy do contrato
-- **Licença**: Fins Educacionais
+---
 
-### Código do Contrato
+### 3. [contrato/](contrato/) - Token ERC20 (DIO Token)
+Implementação completa do padrão ERC20 para criação de tokens fungíveis na Ethereum.
 
-```solidity
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+**Principais Funcionalidades:**
+- Transfer de tokens entre endereços
+- Sistema de approve/allowance
+- Consulta de saldos e supply total
+- Deploy e transações via Remix IDE + MetaMask
 
-contract HelloWorld {
-    string public hello = "Hello World!";
-    string public name = "";
-    
-    function setName(string memory _name) public {
-        name = _name;
-    }
-    
-    function setHello(string memory _hello) public {
-        hello = _hello;
-    }
-}
-```
-
-### Interação com Web3 via NPM
-
-#### Pré-requisitos
-```bash
-npm install web3
-```
-
-#### Configuração e Conexão
-
-1. **Inicializar Web3 com provedor local (Ganache)**
-```javascript
-const Web3 = require('web3');
-const web3 = new Web3('http://localhost:7545'); // Porta padrão do Ganache
-```
-
-2. **Importar ABI do Contrato**
-
-Após compilar o contrato no Remix IDE, copie o ABI gerado e salve em um arquivo `ABI.json`:
-
-```javascript
-const contractABI = require('./ABI.json');
-```
-
-3. **Criar Instância do Contrato**
-
-```javascript
-// Endereço do contrato após deploy
-const contractAddress = '0x...'; // Copie do Remix ou Ganache
-
-// Criar nova instância do contrato
-let contract = new web3.eth.Contract(contractABI, contractAddress);
-```
-
-#### Interagindo com o Contrato
-
-**Leitura de Dados (métodos `view`):**
-```javascript
-// Ler valor de 'hello'
-contract.methods.hello().call()
-    .then(result => console.log('Hello:', result));
-
-// Ler valor de 'name'
-contract.methods.name().call()
-    .then(result => console.log('Name:', result));
-```
-
-**Escrita de Dados (transações):**
-```javascript
-// Obter conta da MetaMask/Ganache
-const account = '0x...'; // Seu endereço de carteira
-
-// Modificar o valor de 'name'
-contract.methods.setName('Samuel').send({ from: account })
-    .then(receipt => console.log('Transação confirmada:', receipt));
-
-// Modificar o valor de 'hello'
-contract.methods.setHello('Olá Mundo!').send({ from: account })
-    .then(receipt => console.log('Transação confirmada:', receipt));
-```
-
-``
-#### Operações Disponíveis no Contrato
-
-| Método | Tipo | Descrição |
-|--------|------|-----------|
-| `hello()` | view | Retorna o valor da variável `hello` |
-| `name()` | view | Retorna o valor da variável `name` |
-| `setHello(string)` | transaction | Modifica o valor de `hello` |
-| `setName(string)` | transaction | Modifica o valor de `name` |
-
-**Observações:**
-- Métodos `view` não gastam gas (leitura)
-- Métodos de transação requerem gas e confirmação da carteira
-- Todas as modificações são registradas na blockchain
+**Tecnologias:** Solidity ^0.8.0, Padrão ERC20, Remix IDE, MetaMask
 
 ---
 
